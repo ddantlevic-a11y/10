@@ -1,0 +1,9 @@
+build/
+*.dSYM
+Lab_10_*
+!Lab_10_*.cpp
+UnitTest_10_*
+!UnitTest_10_*.cpp
+*.bin
+*.dat
+.DS_Store
