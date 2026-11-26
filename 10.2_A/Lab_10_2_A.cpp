@@ -34,8 +34,8 @@ struct Student
 int Utf8Length(const string& s)
 {
     int len = 0;
-    for (unsigned char c : s)
-        if ((c & 0xC0) != 0x80)
+    for (char ch : s)
+        if ((static_cast<unsigned char>(ch) & 0xC0) != 0x80)
             len++;
     return len;
 }
@@ -45,7 +45,7 @@ string PadLeft(const string& s, int width)
     int len = Utf8Length(s);
     if (len >= width)
         return s;
-    return s + string(width - len, ' ');
+    return s + string(static_cast<size_t>(width - len), ' ');
 }
 
 int InputInt(const string& prompt, int minVal, int maxVal)
