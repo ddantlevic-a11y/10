@@ -179,7 +179,7 @@ double PercentPhysics45(const Student* p, const int N)
 int main()
 {
     int N = InputInt("Введіть кількість студентів N: ", 1, 100);
-    Student* p = new Student[N];
+    Student* p = new Student[static_cast<size_t>(N)];
 
     bool isCreated = false;
     int menuItem;

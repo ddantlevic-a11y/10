@@ -126,7 +126,7 @@ void Sort(Student* p, const int N)
 
 int* IndexSort(const Student* p, const int N)
 {
-    int* I = new int[N];
+    int* I = new int[static_cast<size_t>(N)];
     for (int i = 0; i < N; i++)
         I[i] = i;
 
@@ -189,7 +189,7 @@ int BinSearch(const Student* p, const int N, const string prizv, const Specialni
 int main()
 {
     int N = InputInt("Введіть кількість студентів N: ", 1, 100);
-    Student* p = new Student[N];
+    Student* p = new Student[static_cast<size_t>(N)];
 
     bool isCreated = false;
     int menuItem;
