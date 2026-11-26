@@ -10,7 +10,13 @@
 using namespace std;
 
 enum Specialnist { KN, INF, ME, FI, TN };
-string specStr[] = { "Komp. nauky", "Informatyka", "Mat. ta ek.", "Fiz. ta inf.", "Trud. navch." };
+string specStr[] = {
+    "Комп'ютерні науки",
+    "Інформатика",
+    "Математика та економіка",
+    "Фізика та інформатика",
+    "Трудове навчання"
+};
 
 struct Student {
     string prizv;
@@ -33,11 +39,19 @@ int* IndexSort(const Student* p, const int N);
 void PrintIndexSorted(const Student* p, const int* I, const int N);
 int BinSearch(const Student* p, const int N, const string prizv, const Specialnist spec, const int thirdMark);
 
+// Вирівнювання кириличного UTF-8 тексту в таблиці
+string Pad(const string& s, int w) {
+    int len = 0;
+    for (char c : s)
+        if ((static_cast<unsigned char>(c) & 0xC0) != 0x80) len++;
+    return (len < w) ? s + string(static_cast<size_t>(w - len), ' ') : s;
+}
+
 #ifndef UNIT_TEST
 int main() {
     int N;
     do {
-        cout << "Vvedit kilkist studentiv (N > 0): ";
+        cout << "Введіть кількість студентів (N > 0): ";
         cin >> N;
     } while (N <= 0);
 
@@ -46,15 +60,15 @@ int main() {
 
     int menuItem;
     do {
-        cout << "\n================ MENYU ================\n";
-        cout << " [1] - vvedennya danykh z klaviatury\n";
-        cout << " [2] - vyvid danykh na ekran\n";
-        cout << " [3] - fizychne vporyadkuvannya masyvu\n";
-        cout << " [4] - indeksne vporyadkuvannya ta vyvid\n";
-        cout << " [5] - binarnyy poshuk studenta\n";
-        cout << " [0] - vykhid\n";
-        cout << "=======================================\n";
-        cout << "Vyberit diyu: ";
+        cout << "\n================ МЕНЮ ================\n";
+        cout << " [1] - введення даних з клавіатури\n";
+        cout << " [2] - вивід даних на екран\n";
+        cout << " [3] - фізичне впорядкування масиву\n";
+        cout << " [4] - індексне впорядкування та вивід\n";
+        cout << " [5] - бінарний пошук студента\n";
+        cout << " [0] - вихід\n";
+        cout << "======================================\n";
+        cout << "Виберіть дію: ";
         cin >> menuItem;
 
         switch (menuItem) {
@@ -66,7 +80,7 @@ int main() {
             break;
         case 3:
             Sort(p, N);
-            cout << "Masyv fizychno vporyadkovano!\n";
+            cout << "Масив фізично впорядковано!\n";
             break;
         case 4:
             if (I != nullptr) delete[] I;
@@ -76,31 +90,31 @@ int main() {
         case 5: {
             int ispec, mark;
             string prizv;
-            cout << "Vvedit klyuchi poshuku:\n";
+            cout << "Введіть ключі пошуку:\n";
             do {
-                cout << " spetsialnist (0 - KN, 1 - INF, 2 - ME, 3 - FI, 4 - TN): ";
+                cout << " спеціальність (0 - КН, 1 - Інф, 2 - МЕ, 3 - ФІ, 4 - ТН): ";
                 cin >> ispec;
             } while (ispec < 0 || ispec > 4);
             Specialnist spec = (Specialnist)ispec;
             do {
-                cout << " otsinka z tretyoho predmetu (2-5): ";
+                cout << " оцінка з третього предмету (2-5): ";
                 cin >> mark;
             } while (mark < 2 || mark > 5);
-            cout << " prizvyshche: ";
+            cout << " прізвище: ";
             cin >> ws;
             getline(cin, prizv);
 
             int found = BinSearch(p, N, prizv, spec, mark);
             if (found != -1)
-                cout << "Znaydeno studenta u pozytsiyi # " << found + 1 << endl;
+                cout << "Знайдено студента у позиції № " << found + 1 << endl;
             else
-                cout << "Shukanoho studenta ne znaydeno (spochatku vykonayte fizychne vporyadkuvannya [3]).\n";
+                cout << "Шуканого студента не знайдено (спочатку виконайте фізичне впорядкування [3]).\n";
             break;
         }
         case 0:
             break;
         default:
-            cout << "Pomylkove znachennya! Sprobuite shche raz.\n";
+            cout << "Помилкове значення! Спробуйте ще раз.\n";
         }
     } while (menuItem != 0);
 
@@ -119,43 +133,43 @@ int GetThirdMark(const Student& s) {
 void Create(Student* p, const int N) {
     int ispec;
     for (int i = 0; i < N; i++) {
-        cout << "Student # " << i + 1 << ":\n";
+        cout << "Студент № " << i + 1 << ":\n";
 
-        cout << " prizvyshche: ";
+        cout << " прізвище: ";
         cin >> ws;
         getline(cin, p[i].prizv);
 
         do {
-            cout << " kurs (1-6): ";
+            cout << " курс (1-6): ";
             cin >> p[i].kurs;
         } while (p[i].kurs < 1 || p[i].kurs > 6);
 
         do {
-            cout << " spetsialnist (0 - KN, 1 - INF, 2 - ME, 3 - FI, 4 - TN): ";
+            cout << " спеціальність (0 - КН, 1 - Інф, 2 - МЕ, 3 - ФІ, 4 - ТН): ";
             cin >> ispec;
         } while (ispec < 0 || ispec > 4);
         p[i].spec = (Specialnist)ispec;
 
         do {
-            cout << " otsinka z fizyky (2-5): ";
+            cout << " оцінка з фізики (2-5): ";
             cin >> p[i].fizyka;
         } while (p[i].fizyka < 2 || p[i].fizyka > 5);
 
         do {
-            cout << " otsinka z matematyky (2-5): ";
+            cout << " оцінка з математики (2-5): ";
             cin >> p[i].matematyka;
         } while (p[i].matematyka < 2 || p[i].matematyka > 5);
 
         switch (p[i].spec) {
         case KN:
             do {
-                cout << " otsinka z programuvannya (2-5): ";
+                cout << " оцінка з програмування (2-5): ";
                 cin >> p[i].programuvannya;
             } while (p[i].programuvannya < 2 || p[i].programuvannya > 5);
             break;
         case INF:
             do {
-                cout << " otsinka z chyselnykh metodiv (2-5): ";
+                cout << " оцінка з чисельних методів (2-5): ";
                 cin >> p[i].chyselni_metody;
             } while (p[i].chyselni_metody < 2 || p[i].chyselni_metody > 5);
             break;
@@ -163,7 +177,7 @@ void Create(Student* p, const int N) {
         case FI:
         case TN:
             do {
-                cout << " otsinka z pedagogiky (2-5): ";
+                cout << " оцінка з педагогіки (2-5): ";
                 cin >> p[i].pedagogika;
             } while (p[i].pedagogika < 2 || p[i].pedagogika > 5);
             break;
@@ -173,39 +187,39 @@ void Create(Student* p, const int N) {
 }
 
 void Print(const Student* p, const int N) {
-    cout << "==========================================================================================" << endl;
-    cout << "| # | Prizvyshche   | Kurs | Spetsialnist  | Fiz. | Mat. | Prog. | Chys.met | Pedagogika |" << endl;
-    cout << "------------------------------------------------------------------------------------------" << endl;
+    cout << "=============================================================================================================================" << endl;
+    cout << "|  №  | Прізвище      | Курс | Спеціальність           | Фізика | Математика | Програмування | Чисельні методи | Педагогіка |" << endl;
+    cout << "-----------------------------------------------------------------------------------------------------------------------------" << endl;
 
     for (int i = 0; i < N; i++) {
-        cout << "| " << setw(1) << right << i + 1 << " "
-             << "| " << setw(13) << left << p[i].prizv
+        cout << "| " << setw(3) << right << i + 1 << " "
+             << "| " << Pad(p[i].prizv, 13)
              << " | " << setw(4) << right << p[i].kurs
-             << " | " << setw(13) << left << specStr[p[i].spec]
-             << " | " << setw(4) << right << p[i].fizyka
-             << " | " << setw(4) << right << p[i].matematyka;
+             << " | " << Pad(specStr[p[i].spec], 23)
+             << " | " << setw(6) << right << p[i].fizyka
+             << " | " << setw(10) << right << p[i].matematyka;
 
         switch (p[i].spec) {
         case KN:
-            cout << " | " << setw(5) << right << p[i].programuvannya
-                 << " | " << setw(8) << right << " "
+            cout << " | " << setw(13) << right << p[i].programuvannya
+                 << " | " << setw(15) << right << " "
                  << " | " << setw(10) << right << " " << " |" << endl;
             break;
         case INF:
-            cout << " | " << setw(5) << right << " "
-                 << " | " << setw(8) << right << p[i].chyselni_metody
+            cout << " | " << setw(13) << right << " "
+                 << " | " << setw(15) << right << p[i].chyselni_metody
                  << " | " << setw(10) << right << " " << " |" << endl;
             break;
         case ME:
         case FI:
         case TN:
-            cout << " | " << setw(5) << right << " "
-                 << " | " << setw(8) << right << " "
+            cout << " | " << setw(13) << right << " "
+                 << " | " << setw(15) << right << " "
                  << " | " << setw(10) << right << p[i].pedagogika << " |" << endl;
             break;
         }
     }
-    cout << "==========================================================================================" << endl << endl;
+    cout << "=============================================================================================================================" << endl << endl;
 }
 
 void Sort(Student* p, const int N) {
@@ -248,40 +262,40 @@ int* IndexSort(const Student* p, const int N) {
 }
 
 void PrintIndexSorted(const Student* p, const int* I, const int N) {
-    cout << "==========================================================================================" << endl;
-    cout << "| # | Prizvyshche   | Kurs | Spetsialnist  | Fiz. | Mat. | Prog. | Chys.met | Pedagogika |" << endl;
-    cout << "------------------------------------------------------------------------------------------" << endl;
+    cout << "=============================================================================================================================" << endl;
+    cout << "|  №  | Прізвище      | Курс | Спеціальність           | Фізика | Математика | Програмування | Чисельні методи | Педагогіка |" << endl;
+    cout << "-----------------------------------------------------------------------------------------------------------------------------" << endl;
 
     for (int i = 0; i < N; i++) {
         int k = I[i];
-        cout << "| " << setw(1) << right << i + 1 << " "
-             << "| " << setw(13) << left << p[k].prizv
+        cout << "| " << setw(3) << right << i + 1 << " "
+             << "| " << Pad(p[k].prizv, 13)
              << " | " << setw(4) << right << p[k].kurs
-             << " | " << setw(13) << left << specStr[p[k].spec]
-             << " | " << setw(4) << right << p[k].fizyka
-             << " | " << setw(4) << right << p[k].matematyka;
+             << " | " << Pad(specStr[p[k].spec], 23)
+             << " | " << setw(6) << right << p[k].fizyka
+             << " | " << setw(10) << right << p[k].matematyka;
 
         switch (p[k].spec) {
         case KN:
-            cout << " | " << setw(5) << right << p[k].programuvannya
-                 << " | " << setw(8) << right << " "
+            cout << " | " << setw(13) << right << p[k].programuvannya
+                 << " | " << setw(15) << right << " "
                  << " | " << setw(10) << right << " " << " |" << endl;
             break;
         case INF:
-            cout << " | " << setw(5) << right << " "
-                 << " | " << setw(8) << right << p[k].chyselni_metody
+            cout << " | " << setw(13) << right << " "
+                 << " | " << setw(15) << right << p[k].chyselni_metody
                  << " | " << setw(10) << right << " " << " |" << endl;
             break;
         case ME:
         case FI:
         case TN:
-            cout << " | " << setw(5) << right << " "
-                 << " | " << setw(8) << right << " "
+            cout << " | " << setw(13) << right << " "
+                 << " | " << setw(15) << right << " "
                  << " | " << setw(10) << right << p[k].pedagogika << " |" << endl;
             break;
         }
     }
-    cout << "==========================================================================================" << endl << endl;
+    cout << "=============================================================================================================================" << endl << endl;
 }
 
 int BinSearch(const Student* p, const int N, const string prizv, const Specialnist spec, const int thirdMark) {

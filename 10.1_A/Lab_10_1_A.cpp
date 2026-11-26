@@ -10,7 +10,13 @@
 using namespace std;
 
 enum Specialnist { KN, INF, ME, FI, TN };
-string specStr[] = { "Komp. nauky", "Informatyka", "Mat. ta ek.", "Fiz. ta inf.", "Trud. navch." };
+string specStr[] = {
+    "Комп'ютерні науки",
+    "Інформатика",
+    "Математика та економіка",
+    "Фізика та інформатика",
+    "Трудове навчання"
+};
 
 struct Student {
     string prizv;
@@ -27,13 +33,21 @@ double CalcAverage(const Student& s);
 void PrintAverages(const Student* p, const int N);
 double PercentPhysics45(const Student* p, const int N);
 
+// Вирівнювання кириличного UTF-8 тексту в таблиці
+string Pad(const string& s, int w) {
+    int len = 0;
+    for (char c : s)
+        if ((static_cast<unsigned char>(c) & 0xC0) != 0x80) len++;
+    return (len < w) ? s + string(static_cast<size_t>(w - len), ' ') : s;
+}
+
 #ifndef UNIT_TEST
 int main() {
     int N;
     do {
-        cout << "Vvedit kilkist studentiv (N > 0): ";
+        cout << "Введіть кількість студентів (N > 0): ";
         cin >> N;
-        if (N <= 0) cout << "Pomylka! Kilkist maye buty bilshoyu za 0.\n";
+        if (N <= 0) cout << "Помилка! Кількість має бути більшою за 0.\n";
     } while (N <= 0);
 
     Student* p = new Student[static_cast<size_t>(N)];
@@ -43,7 +57,7 @@ int main() {
 
     PrintAverages(p, N);
     double proc = PercentPhysics45(p, N);
-    cout << "Protsent studentiv, yaki otrymaly z fizyky otsinky \"5\" abo \"4\": "
+    cout << "Процент студентів, які отримали з фізики оцінки \"5\" або \"4\": "
          << fixed << setprecision(2) << proc << "%" << endl;
 
     delete[] p;
@@ -54,35 +68,35 @@ int main() {
 void Create(Student* p, const int N) {
     int ispec;
     for (int i = 0; i < N; i++) {
-        cout << "Student # " << i + 1 << ":" << endl;
+        cout << "Студент № " << i + 1 << ":" << endl;
 
-        cout << " prizvyshche: ";
+        cout << " прізвище: ";
         cin >> ws;
         getline(cin, p[i].prizv);
 
         do {
-            cout << " kurs (1-6): ";
+            cout << " курс (1-6): ";
             cin >> p[i].kurs;
         } while (p[i].kurs < 1 || p[i].kurs > 6);
 
         do {
-            cout << " spetsialnist (0 - KN, 1 - INF, 2 - ME, 3 - FI, 4 - TN): ";
+            cout << " спеціальність (0 - КН, 1 - Інф, 2 - МЕ, 3 - ФІ, 4 - ТН): ";
             cin >> ispec;
         } while (ispec < 0 || ispec > 4);
         p[i].spec = (Specialnist)ispec;
 
         do {
-            cout << " otsinka z fizyky (2-5): ";
+            cout << " оцінка з фізики (2-5): ";
             cin >> p[i].fizyka;
         } while (p[i].fizyka < 2 || p[i].fizyka > 5);
 
         do {
-            cout << " otsinka z matematyky (2-5): ";
+            cout << " оцінка з математики (2-5): ";
             cin >> p[i].matematyka;
         } while (p[i].matematyka < 2 || p[i].matematyka > 5);
 
         do {
-            cout << " otsinka z informatyky (2-5): ";
+            cout << " оцінка з інформатики (2-5): ";
             cin >> p[i].informatyka;
         } while (p[i].informatyka < 2 || p[i].informatyka > 5);
 
@@ -91,20 +105,20 @@ void Create(Student* p, const int N) {
 }
 
 void Print(const Student* p, const int N) {
-    cout << "=====================================================================" << endl;
-    cout << "| # | Prizvyshche   | Kurs | Spetsialnist  | Fiz. | Mat. | Inform. |" << endl;
-    cout << "---------------------------------------------------------------------" << endl;
+    cout << "===============================================================================================" << endl;
+    cout << "|  №  | Прізвище      | Курс | Спеціальність           | Фізика | Математика | Інформатика |" << endl;
+    cout << "-----------------------------------------------------------------------------------------------" << endl;
 
     for (int i = 0; i < N; i++) {
-        cout << "| " << setw(1) << right << i + 1 << " "
-             << "| " << setw(13) << left << p[i].prizv
+        cout << "| " << setw(3) << right << i + 1 << " "
+             << "| " << Pad(p[i].prizv, 13)
              << " | " << setw(4) << right << p[i].kurs
-             << " | " << setw(13) << left << specStr[p[i].spec]
-             << " | " << setw(4) << right << p[i].fizyka
-             << " | " << setw(4) << right << p[i].matematyka
-             << " | " << setw(7) << right << p[i].informatyka << " |" << endl;
+             << " | " << Pad(specStr[p[i].spec], 23)
+             << " | " << setw(6) << right << p[i].fizyka
+             << " | " << setw(10) << right << p[i].matematyka
+             << " | " << setw(11) << right << p[i].informatyka << " |" << endl;
     }
-    cout << "=====================================================================" << endl << endl;
+    cout << "===============================================================================================" << endl << endl;
 }
 
 double CalcAverage(const Student& s) {
@@ -112,16 +126,16 @@ double CalcAverage(const Student& s) {
 }
 
 void PrintAverages(const Student* p, const int N) {
-    cout << "Seredniy bal kozhnoho studenta:" << endl;
-    cout << "---------------------------------" << endl;
-    cout << "| # | Prizvyshche   | Ser. bal  |" << endl;
-    cout << "---------------------------------" << endl;
+    cout << "Середній бал кожного студента:" << endl;
+    cout << "-----------------------------------" << endl;
+    cout << "|  №  | Прізвище      | Сер. бал  |" << endl;
+    cout << "-----------------------------------" << endl;
     for (int i = 0; i < N; i++) {
-        cout << "| " << setw(1) << right << i + 1 << " "
-             << "| " << setw(13) << left << p[i].prizv
+        cout << "| " << setw(3) << right << i + 1 << " "
+             << "| " << Pad(p[i].prizv, 13)
              << " | " << setw(9) << fixed << setprecision(2) << right << CalcAverage(p[i]) << " |" << endl;
     }
-    cout << "---------------------------------" << endl << endl;
+    cout << "-----------------------------------" << endl << endl;
 }
 
 double PercentPhysics45(const Student* p, const int N) {
