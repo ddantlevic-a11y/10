@@ -163,9 +163,19 @@ void Print(const Student* p, const int N) {
 
 double CalcAverage(const Student& s) {
     int thirdMark = 0;
-    if (s.spec == KN) thirdMark = s.programuvannya;
-    else if (s.spec == INF) thirdMark = s.chyselni_metody;
-    else thirdMark = s.pedagogika;
+    switch (s.spec) {
+    case KN:
+        thirdMark = s.programuvannya;
+        break;
+    case INF:
+        thirdMark = s.chyselni_metody;
+        break;
+    case ME:
+    case FI:
+    case TN:
+        thirdMark = s.pedagogika;
+        break;
+    }
     return (s.fizyka + s.matematyka + thirdMark) / 3.0;
 }
 

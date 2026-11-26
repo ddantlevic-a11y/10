@@ -125,9 +125,17 @@ int main() {
 #endif
 
 int GetThirdMark(const Student& s) {
-    if (s.spec == KN) return s.programuvannya;
-    if (s.spec == INF) return s.chyselni_metody;
-    return s.pedagogika;
+    switch (s.spec) {
+    case KN:
+        return s.programuvannya;
+    case INF:
+        return s.chyselni_metody;
+    case ME:
+    case FI:
+    case TN:
+        return s.pedagogika;
+    }
+    return 0;
 }
 
 void Create(Student* p, const int N) {
