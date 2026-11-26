@@ -211,9 +211,9 @@ int* IndexSort(const Student* p, const int N) {
 }
 
 void PrintIndexSorted(const Student* p, const int* I, const int N) {
-    cout << "===============================================================================================" << endl;
+    cout << "============================================================================================" << endl;
     cout << "|  №  | Прізвище      | Курс | Спеціальність           | Фізика | Математика | Інформатика |" << endl;
-    cout << "-----------------------------------------------------------------------------------------------" << endl;
+    cout << "--------------------------------------------------------------------------------------------" << endl;
 
     for (int i = 0; i < N; i++) {
         cout << "| " << setw(3) << right << i + 1 << " "
@@ -224,7 +224,7 @@ void PrintIndexSorted(const Student* p, const int* I, const int N) {
              << " | " << setw(10) << right << p[I[i]].matematyka
              << " | " << setw(11) << right << p[I[i]].informatyka << " |" << endl;
     }
-    cout << "===============================================================================================" << endl << endl;
+    cout << "============================================================================================" << endl << endl;
 }
 
 int BinSearch(const Student* p, const int N, const string prizv, const Specialnist spec, const int infMark) {
